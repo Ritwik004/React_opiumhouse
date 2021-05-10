@@ -41,7 +41,7 @@ export default withAuth(
             url: databaseURL,
             async onConnect(keystone) {
                 console.log('Connected to the database');
-                if (process.argv.includes('---seed-data')) {
+                if (process.argv.includes('--seed-data')) {
                     await insertSeedData(keystone);
                 }
             },
@@ -52,7 +52,10 @@ export default withAuth(
             ProductImage,
         }),
         ui: {
-            isAccessAllowed: () => true,
+            isAccessAllowed: ({ session }) => {
+                console.log(session);
+                return session?.data;
+            },
         },
         session: withItemData(statelessSessions(sessionConfig), {
             User: 'id',
